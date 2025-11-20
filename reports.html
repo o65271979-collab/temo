@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Temo - تقارير المبيعات</title>
+    <link rel="stylesheet" href="styles-pro.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* متغيرات الألوان */
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --success: #10b981;
+            --success-dark: #059669;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --light: #f8fafc;
+            --border: #e5e7eb;
+            --text-dark: #1f2937;
+            --text-light: #6b7280;
+        }
+
+        .reports-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 30px 20px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+        }
+
+        /* عنوان الصفحة */
+        .page-title {
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        .page-title h1 {
+            font-size: 2.5rem;
+            color: var(--text-dark);
+            margin: 0 0 10px 0;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .page-title p {
+            color: var(--text-light);
+            font-size: 1.1rem;
+            margin: 0;
+        }
+
+        /* شبكة الإحصائيات */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 2px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--success));
+        }
+
+        .stat-card:nth-child(2)::before {
+            background: linear-gradient(90deg, var(--warning), var(--danger));
+        }
+
+        .stat-card:nth-child(3)::before {
+            background: linear-gradient(90deg, var(--success), #10b981);
+        }
+
+        .stat-card:nth-child(4)::before {
+            background: linear-gradient(90deg, #3b82f6, var(--primary));
+        }
+
+        .stat-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+            border-color: var(--primary);
+        }
+
+        .stat-card h3 {
+            margin: 0 0 15px 0;
+            font-size: 0.95rem;
+            color: var(--text-light);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-card .value {
+            font-size: 2.8rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary), var(--success));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin: 10px 0;
+        }
+
+        /* جدول التقارير */
+        .reports-table {
+            background: white;
+            border-radius: 20px;
+            padding: 35px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+            margin-bottom: 40px;
+            border: 1px solid var(--border);
+        }
+
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .table-header h2 {
+            margin: 0;
+            color: var(--text-dark);
+            font-size: 1.8rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .filter-controls {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .filter-controls input,
+        .filter-controls select {
+            padding: 12px 16px;
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            font-size: 14px;
+            font-family: inherit;
+            transition: all 0.3s;
+            background: white;
+        }
+
+        .filter-controls input:focus,
+        .filter-controls select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .refresh-btn {
+            background: linear-gradient(135deg, var(--success), var(--success-dark));
+            color: white;
+            border: none;
+            padding: 12px 28px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+        }
+
+        .refresh-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(16, 185, 129, 0.3);
+        }
+
+        .refresh-btn:active {
+            transform: translateY(0);
+        }
+
+        /* جدول المبيعات */
+        .sales-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .sales-table th {
+            background: linear-gradient(135deg, #f8fafc, #f0f4f8);
+            padding: 16px 12px;
+            text-align: right;
+            font-weight: 700;
+            color: var(--text-dark);
+            border-bottom: 2px solid var(--primary);
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .sales-table td {
+            padding: 16px 12px;
+            text-align: right;
+            border-bottom: 1px solid var(--border);
+            color: var(--text-dark);
+        }
+
+        .sales-table tbody tr {
+            transition: all 0.3s;
+        }
+
+        .sales-table tbody tr:hover {
+            background: linear-gradient(90deg, rgba(37, 99, 235, 0.05), transparent);
+            box-shadow: inset 0 0 10px rgba(37, 99, 235, 0.05);
+        }
+
+        .sales-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* الشارات */
+        .payment-badge {
+            display: inline-block;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .payment-cash {
+            background: linear-gradient(135deg, #dcfce7, #bbf7d0);
+            color: #166534;
+            border: 1px solid #86efac;
+        }
+
+        .payment-card {
+            background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+            color: #1e40af;
+            border: 1px solid #93c5fd;
+        }
+
+        /* حالات التحميل والخطأ */
+        .loading {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-light);
+        }
+
+        .loading i {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            color: var(--primary);
+            animation: spin 2s linear infinite;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .no-data {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-light);
+        }
+
+        .no-data i {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+
+        .error-message {
+            background: linear-gradient(135deg, #fee2e2, #fecaca);
+            color: #991b1b;
+            padding: 20px;
+            border-radius: 12px;
+            margin: 20px 0;
+            text-align: center;
+            border-left: 4px solid var(--danger);
+            font-weight: 500;
+        }
+
+        /* شبكة التحليلات */
+        .analytics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .analytics-card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+            border: 1px solid var(--border);
+            transition: all 0.3s;
+        }
+
+        .analytics-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.12);
+        }
+
+        .analytics-card h3 {
+            margin: 0 0 20px 0;
+            color: var(--text-dark);
+            font-size: 1.3rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--primary);
+        }
+
+        .analytics-card h3 i {
+            color: var(--primary);
+            font-size: 1.5rem;
+        }
+
+        .top-products-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .top-products-list li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 0;
+            border-bottom: 1px solid var(--border);
+            transition: all 0.3s;
+        }
+
+        .top-products-list li:hover {
+            padding-right: 10px;
+            color: var(--primary);
+        }
+
+        .top-products-list li:last-child {
+            border-bottom: none;
+        }
+
+        .top-products-list li span:first-child {
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .top-products-list li span:last-child {
+            background: linear-gradient(135deg, var(--primary), var(--success));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 700;
+        }
+
+        /* استجابة الجوال */
+        @media (max-width: 768px) {
+            .reports-container {
+                padding: 20px 15px;
+            }
+
+            .page-title h1 {
+                font-size: 1.8rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                gap: 15px;
+                margin-bottom: 30px;
+            }
+
+            .stat-card {
+                padding: 20px;
+            }
+
+            .stat-card .value {
+                font-size: 2rem;
+            }
+
+            .reports-table {
+                padding: 20px;
+            }
+
+            .table-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .filter-controls {
+                width: 100%;
+                flex-direction: column;
+            }
+
+            .filter-controls input,
+            .filter-controls select,
+            .refresh-btn {
+                width: 100%;
+            }
+
+            .sales-table {
+                font-size: 0.9rem;
+            }
+
+            .sales-table th,
+            .sales-table td {
+                padding: 10px 8px;
+            }
+
+            .analytics-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="logo">
+                <i class="fas fa-utensils"></i>
+                <h1>Temo</h1>
+            </div>
+            <nav class="nav">
+                <a href="index.html" class="nav-link"><i class="fas fa-home"></i> الرئيسية</a>
+                <a href="shifts.html" class="nav-link"><i class="fas fa-clock"></i> الشيفتات</a>
+                <a href="expenses.html" class="nav-link"><i class="fas fa-receipt"></i> المصاريف</a>
+                <a href="reports.html" class="nav-link active"><i class="fas fa-chart-bar"></i> التقارير</a>
+                <a href="statistics.html" class="nav-link"><i class="fas fa-analytics"></i> الإحصائيات</a>
+                <a href="settings.html" class="nav-link"><i class="fas fa-cog"></i> الإعدادات</a>
+            </nav>
+        </header>
+
+        <main class="reports-container">
+            <div class="page-title">
+                <h1><i class="fas fa-chart-bar"></i> تقارير المبيعات</h1>
+                <p>عرض شامل لجميع بيانات المبيعات من Firebase</p>
+            </div>
+
+            <!-- إحصائيات سريعة -->
+            <div class="stats-grid" id="statsGrid">
+                <div class="stat-card">
+                    <h3>عدد المبيعات</h3>
+                    <div class="value" id="totalSales">0</div>
+                </div>
+                <div class="stat-card">
+                    <h3>إجمالي المبيعات</h3>
+                    <div class="value" id="totalAmount">0.00 جنيه</div>
+                </div>
+                <div class="stat-card">
+                    <h3>المبيعات النقدية</h3>
+                    <div class="value" id="cashSales">0.00 جنيه</div>
+                </div>
+                <div class="stat-card">
+                    <h3>مبيعات البطاقات</h3>
+                    <div class="value" id="cardSales">0.00 جنيه</div>
+                </div>
+            </div>
+
+            <!-- أدوات التحكم -->
+            <div class="reports-table">
+                <div class="table-header">
+                    <h2>سجل المبيعات</h2>
+                    <div class="filter-controls">
+                        <input type="date" id="dateFilter" placeholder="تصفية حسب التاريخ">
+                        <select id="paymentFilter">
+                            <option value="">جميع طرق الدفع</option>
+                            <option value="نقدي">نقدي</option>
+                            <option value="بطاقة">بطاقة</option>
+                        </select>
+                        <button class="refresh-btn" onclick="loadReportsData()">
+                            <i class="fas fa-sync-alt"></i> تحديث البيانات
+                        </button>
+                    </div>
+                </div>
+
+                <!-- رسائل الحالة -->
+                <div id="loadingMessage" class="loading" style="display: none;">
+                    <i class="fas fa-spinner fa-spin"></i> جاري تحميل البيانات من Firebase...
+                </div>
+
+                <div id="errorMessage" class="error-message" style="display: none;"></div>
+
+                <div id="noDataMessage" class="no-data" style="display: none;">
+                    لا توجد بيانات مبيعات في Firebase
+                </div>
+
+                <!-- جدول المبيعات -->
+                <div id="salesTableContainer" style="display: none;">
+                    <table class="sales-table">
+                        <thead>
+                            <tr>
+                                <th>رقم الفاتورة</th>
+                                <th>التاريخ</th>
+                                <th>الطاولة/النوع</th>
+                                <th>المنتجات</th>
+                                <th>المبلغ</th>
+                                <th>الكاشير</th>
+                                <th>طريقة الدفع</th>
+                            </tr>
+                        </thead>
+                        <tbody id="salesTableBody">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- تحليلات متقدمة -->
+            <div class="analytics-grid" id="analyticsGrid" style="display: none;">
+                <div class="analytics-card">
+                    <h3><i class="fas fa-trophy"></i> أفضل المنتجات</h3>
+                    <ul class="top-products-list" id="topProductsList">
+                    </ul>
+                </div>
+
+                <div class="analytics-card">
+                    <h3><i class="fas fa-table"></i> تحليل الطاولات</h3>
+                    <ul class="top-products-list" id="tableAnalysisList">
+                    </ul>
+                </div>
+
+                <div class="analytics-card">
+                    <h3><i class="fas fa-clock"></i> المبيعات بالساعة</h3>
+                    <div id="hourlyChart">
+                        <p style="text-align: center; color: #6b7280;">سيتم عرض الرسم البياني هنا</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Firebase Scripts -->
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { 
+            getFirestore, 
+            collection, 
+            getDocs, 
+            query, 
+            orderBy, 
+            where 
+        } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+
+        // إعداد Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyAtCV2XfOJwLy050kHg5y_Oqy-9NfKyOlc",
+            authDomain: "temo-a8e65.firebaseapp.com",
+            projectId: "temo-a8e65",
+            storageBucket: "temo-a8e65.firebasestorage.app",
+            messagingSenderId: "897974034557",
+            appId: "1:897974034557:web:fcb74ee2c9e9b73def1114",
+            measurementId: "G-EVZ5JG42TS"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // متغيرات عامة
+        let allSalesData = [];
+        let allRestaurantData = [];
+
+        // تحميل البيانات من Firebase
+        async function loadReportsData() {
+            const loadingEl = document.getElementById('loadingMessage');
+            const errorEl = document.getElementById('errorMessage');
+            const noDataEl = document.getElementById('noDataMessage');
+            const tableEl = document.getElementById('salesTableContainer');
+            const analyticsEl = document.getElementById('analyticsGrid');
+
+            // إظهار رسالة التحميل
+            loadingEl.style.display = 'block';
+            errorEl.style.display = 'none';
+            noDataEl.style.display = 'none';
+            tableEl.style.display = 'none';
+            analyticsEl.style.display = 'none';
+
+            try {
+                console.log('🔄 بدء تحميل البيانات من Firebase...');
+
+                // تحميل البيانات المنظمة من restaurant_data
+                const restaurantDataQuery = query(
+                    collection(db, 'restaurant_data'), 
+                    orderBy('metadata.generatedAt', 'desc')
+                );
+                const restaurantDataSnapshot = await getDocs(restaurantDataQuery);
+                allRestaurantData = [];
+                restaurantDataSnapshot.forEach((doc) => {
+                    allRestaurantData.push({ id: doc.id, ...doc.data() });
+                });
+
+                // تحميل البيانات من sales_reports
+                const salesReportsQuery = query(
+                    collection(db, 'sales_reports'), 
+                    orderBy('date', 'desc')
+                );
+                const salesReportsSnapshot = await getDocs(salesReportsQuery);
+                allSalesData = [];
+                salesReportsSnapshot.forEach((doc) => {
+                    allSalesData.push({ id: doc.id, ...doc.data() });
+                });
+
+                console.log('✅ تم تحميل البيانات:', {
+                    restaurantData: allRestaurantData.length,
+                    salesReports: allSalesData.length
+                });
+
+                // إخفاء رسالة التحميل
+                loadingEl.style.display = 'none';
+
+                if (allRestaurantData.length === 0 && allSalesData.length === 0) {
+                    noDataEl.style.display = 'block';
+                    return;
+                }
+
+                // عرض البيانات
+                displayStatistics();
+                displaySalesTable();
+                displayAnalytics();
+
+                tableEl.style.display = 'block';
+                if (allRestaurantData.length > 0) {
+                    analyticsEl.style.display = 'block';
+                }
+
+            } catch (error) {
+                console.error('❌ خطأ في تحميل البيانات:', error);
+                loadingEl.style.display = 'none';
+                errorEl.textContent = `خطأ في تحميل البيانات: ${error.message}`;
+                errorEl.style.display = 'block';
+            }
+        }
+
+        // عرض الإحصائيات
+        function displayStatistics() {
+            let totalSales = 0;
+            let totalAmount = 0;
+            let cashSales = 0;
+            let cardSales = 0;
+
+            // من البيانات المنظمة
+            if (allRestaurantData.length > 0) {
+                const latestData = allRestaurantData[0];
+                if (latestData.statistics) {
+                    totalSales = latestData.statistics.totalSales || 0;
+                    totalAmount = latestData.statistics.totalAmount || 0;
+                    cashSales = latestData.statistics.cashSales || 0;
+                    cardSales = latestData.statistics.cardSales || 0;
+                }
+            } else {
+                // حساب من البيانات المفردة
+                allSalesData.forEach(sale => {
+                    totalSales++;
+                    totalAmount += sale.total || 0;
+                    if (sale.paymentMethod === 'نقدي') {
+                        cashSales += sale.total || 0;
+                    } else {
+                        cardSales += sale.total || 0;
+                    }
+                });
+            }
+
+            document.getElementById('totalSales').textContent = totalSales;
+            document.getElementById('totalAmount').textContent = `${totalAmount.toFixed(2)} جنيه`;
+            document.getElementById('cashSales').textContent = `${cashSales.toFixed(2)} جنيه`;
+            document.getElementById('cardSales').textContent = `${cardSales.toFixed(2)} جنيه`;
+        }
+
+        // عرض جدول المبيعات
+        function displaySalesTable() {
+            const tbody = document.getElementById('salesTableBody');
+            tbody.innerHTML = '';
+
+            let salesData = [];
+
+            // استخدام البيانات المنظمة إذا كانت متوفرة
+            if (allRestaurantData.length > 0) {
+                const latestData = allRestaurantData[0];
+                if (latestData.salesRecords) {
+                    salesData = latestData.salesRecords;
+                }
+            } else {
+                salesData = allSalesData;
+            }
+
+            // تطبيق الفلاتر
+            const dateFilter = document.getElementById('dateFilter').value;
+            const paymentFilter = document.getElementById('paymentFilter').value;
+
+            let filteredData = salesData;
+
+            if (dateFilter) {
+                const selectedDate = new Date(dateFilter).toDateString();
+                filteredData = filteredData.filter(sale => {
+                    const saleDate = new Date(sale.date || sale.timestamp).toDateString();
+                    return saleDate === selectedDate;
+                });
+            }
+
+            if (paymentFilter) {
+                filteredData = filteredData.filter(sale => 
+                    sale.paymentMethod === paymentFilter
+                );
+            }
+
+            // عرض البيانات في الجدول
+            filteredData.forEach(sale => {
+                const row = document.createElement('tr');
+                
+                const date = new Date(sale.date || sale.timestamp);
+                const formattedDate = `${date.toLocaleDateString('ar-EG')} ${date.toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' })}`;
+                
+                const itemsCount = sale.items ? sale.items.reduce((sum, item) => sum + (item.quantity || 1), 0) : 0;
+                const itemsPreview = sale.items ? 
+                    sale.items.slice(0, 2).map(item => `${item.name} (${item.quantity || 1})`).join(', ') + 
+                    (sale.items.length > 2 ? '...' : '') : 'غير محدد';
+
+                const tableInfo = sale.tableId === 'takeaway' ? 'طلب خارجي' : 
+                                 sale.tableId === 'delivery' ? 'توصيل' : 
+                                 `طاولة ${sale.tableId}`;
+
+                const paymentBadge = sale.paymentMethod === 'نقدي' ? 
+                    '<span class="payment-badge payment-cash">نقدي</span>' :
+                    '<span class="payment-badge payment-card">بطاقة</span>';
+
+                row.innerHTML = `
+                    <td>${sale.id}</td>
+                    <td>${formattedDate}</td>
+                    <td>${tableInfo}</td>
+                    <td>
+                        ${itemsCount} منتجات
+                        <div style="font-size: 0.8rem; color: #6b7280;">${itemsPreview}</div>
+                    </td>
+                    <td>${(sale.total || 0).toFixed(2)} جنيه</td>
+                    <td>${sale.cashierName || 'غير محدد'}</td>
+                    <td>${paymentBadge}</td>
+                `;
+                
+                tbody.appendChild(row);
+            });
+        }
+
+        // عرض التحليلات
+        function displayAnalytics() {
+            if (allRestaurantData.length === 0) return;
+
+            const latestData = allRestaurantData[0];
+            if (!latestData.analytics) return;
+
+            // أفضل المنتجات
+            const topProductsList = document.getElementById('topProductsList');
+            topProductsList.innerHTML = '';
+            
+            if (latestData.analytics.topProducts) {
+                latestData.analytics.topProducts.forEach(product => {
+                    const li = document.createElement('li');
+                    li.innerHTML = `
+                        <span>${product.name}</span>
+                        <span>${product.totalRevenue.toFixed(2)} جنيه</span>
+                    `;
+                    topProductsList.appendChild(li);
+                });
+            }
+
+            // تحليل الطاولات
+            const tableAnalysisList = document.getElementById('tableAnalysisList');
+            tableAnalysisList.innerHTML = '';
+            
+            if (latestData.analytics.tableAnalysis) {
+                Object.entries(latestData.analytics.tableAnalysis).forEach(([tableId, stats]) => {
+                    const li = document.createElement('li');
+                    const tableName = tableId === 'takeaway' ? 'طلب خارجي' : 
+                                     tableId === 'delivery' ? 'توصيل' : 
+                                     `طاولة ${tableId}`;
+                    li.innerHTML = `
+                        <span>${tableName}</span>
+                        <span>${stats.total.toFixed(2)} جنيه (${stats.count})</span>
+                    `;
+                    tableAnalysisList.appendChild(li);
+                });
+            }
+        }
+
+        // إضافة مستمعي الأحداث للفلاتر
+        document.getElementById('dateFilter').addEventListener('change', displaySalesTable);
+        document.getElementById('paymentFilter').addEventListener('change', displaySalesTable);
+
+        // تحميل البيانات عند تحميل الصفحة
+        window.loadReportsData = loadReportsData;
+        loadReportsData();
+
+        // تحديث تلقائي كل دقيقة
+        setInterval(loadReportsData, 60000);
+    </script>
+
+    <!-- Notifications Scripts -->
+    <script src="notifications.js"></script>
+    <script src="advanced-notifications.js"></script>
+</body>
+</html>
