@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اختبار الإشعارات المتقدمة - Temo</title>
+    <link rel="stylesheet" href="styles-pro.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .test-container {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        .test-section {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .test-section h3 {
+            margin-top: 0;
+            color: #2563eb;
+            border-bottom: 2px solid #2563eb;
+            padding-bottom: 10px;
+        }
+
+        .test-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .test-btn {
+            padding: 12px 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+            font-family: inherit;
+            font-size: 14px;
+        }
+
+        .test-btn-success {
+            background: #10b981;
+            color: white;
+        }
+
+        .test-btn-success:hover {
+            background: #059669;
+            transform: translateY(-2px);
+        }
+
+        .test-btn-warning {
+            background: #f59e0b;
+            color: white;
+        }
+
+        .test-btn-warning:hover {
+            background: #d97706;
+            transform: translateY(-2px);
+        }
+
+        .test-btn-error {
+            background: #ef4444;
+            color: white;
+        }
+
+        .test-btn-error:hover {
+            background: #dc2626;
+            transform: translateY(-2px);
+        }
+
+        .test-btn-info {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .test-btn-info:hover {
+            background: #2563eb;
+            transform: translateY(-2px);
+        }
+
+        .info-box {
+            background: #f0f9ff;
+            border-left: 4px solid #3b82f6;
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 15px;
+            font-size: 14px;
+            color: #1e40af;
+        }
+
+        .status {
+            padding: 10px;
+            border-radius: 6px;
+            margin-top: 10px;
+            font-weight: 500;
+        }
+
+        .status.active {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .status.inactive {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .settings-link {
+            display: inline-block;
+            margin-top: 15px;
+            padding: 10px 16px;
+            background: #2563eb;
+            color: white;
+            border-radius: 6px;
+            text-decoration: none;
+            cursor: pointer;
+            border: none;
+            font-family: inherit;
+            font-weight: 500;
+        }
+
+        .settings-link:hover {
+            background: #1d4ed8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="logo">
+                <i class="fas fa-utensils"></i>
+                <h1>Temo</h1>
+            </div>
+            <nav class="nav">
+                <a href="index.html" class="nav-link"><i class="fas fa-home"></i> الرئيسية</a>
+                <a href="test-advanced-notifications.html" class="nav-link active"><i class="fas fa-flask"></i> اختبار الإشعارات</a>
+            </nav>
+        </header>
+
+        <main class="main">
+            <div class="test-container">
+                <h1><i class="fas fa-flask"></i> اختبار نظام الإشعارات المتقدمة</h1>
+
+                <!-- Sales Notifications -->
+                <div class="test-section">
+                    <h3><i class="fas fa-chart-line"></i> اختبار تنبيهات المبيعات</h3>
+                    <p>اختبر تنبيهات المبيعات العالية والمنخفضة</p>
+                    
+                    <div class="test-buttons">
+                        <button class="test-btn test-btn-success" onclick="testHighSales()">
+                            <i class="fas fa-arrow-up"></i> مبيعات عالية
+                        </button>
+                        <button class="test-btn test-btn-warning" onclick="testLowSales()">
+                            <i class="fas fa-arrow-down"></i> مبيعات منخفضة
+                        </button>
+                    </div>
+
+                    <div class="info-box">
+                        <i class="fas fa-info-circle"></i> 
+                        سيتم إرسال إشعارات تجريبية بناءً على الحدود المعينة في الإعدادات
+                    </div>
+                </div>
+
+                <!-- Expense Notifications -->
+                <div class="test-section">
+                    <h3><i class="fas fa-money-bill-wave"></i> اختبار تنبيهات المصاريف</h3>
+                    <p>اختبر تنبيهات المصاريف الكبيرة والحرجة</p>
+                    
+                    <div class="test-buttons">
+                        <button class="test-btn test-btn-warning" onclick="testHighExpense()">
+                            <i class="fas fa-exclamation"></i> مصروف كبير
+                        </button>
+                        <button class="test-btn test-btn-error" onclick="testCriticalExpense()">
+                            <i class="fas fa-exclamation-triangle"></i> مصروف حرج
+                        </button>
+                    </div>
+
+                    <div class="info-box">
+                        <i class="fas fa-info-circle"></i> 
+                        المصاريف الحرجة تظهر بتنبيه أحمر وصوت أعلى
+                    </div>
+                </div>
+
+                <!-- Performance Notifications -->
+                <div class="test-section">
+                    <h3><i class="fas fa-tachometer-alt"></i> اختبار تنبيهات الأداء</h3>
+                    <p>اختبر ملخص الأداء اليومي</p>
+                    
+                    <div class="test-buttons">
+                        <button class="test-btn test-btn-info" onclick="testDailyPerformance()">
+                            <i class="fas fa-chart-bar"></i> ملخص الأداء اليومي
+                        </button>
+                    </div>
+
+                    <div class="info-box">
+                        <i class="fas fa-info-circle"></i> 
+                        يتضمن إجمالي المبيعات والمصاريف والربح ونسبة الربح
+                    </div>
+                </div>
+
+                <!-- Manual Notifications -->
+                <div class="test-section">
+                    <h3><i class="fas fa-bell"></i> إشعارات يدوية</h3>
+                    <p>اختبر أنواع الإشعارات المختلفة</p>
+                    
+                    <div class="test-buttons">
+                        <button class="test-btn test-btn-success" onclick="testSuccessNotification()">
+                            <i class="fas fa-check-circle"></i> نجاح
+                        </button>
+                        <button class="test-btn test-btn-warning" onclick="testWarningNotification()">
+                            <i class="fas fa-exclamation-circle"></i> تحذير
+                        </button>
+                        <button class="test-btn test-btn-error" onclick="testErrorNotification()">
+                            <i class="fas fa-times-circle"></i> خطأ
+                        </button>
+                        <button class="test-btn test-btn-info" onclick="testInfoNotification()">
+                            <i class="fas fa-info-circle"></i> معلومات
+                        </button>
+                    </div>
+
+                    <div class="info-box">
+                        <i class="fas fa-info-circle"></i> 
+                        اختبر الإشعارات الأساسية المختلفة
+                    </div>
+                </div>
+
+                <!-- System Status -->
+                <div class="test-section">
+                    <h3><i class="fas fa-cog"></i> حالة النظام</h3>
+                    
+                    <div id="systemStatus">
+                        <p>جاري فحص حالة النظام...</p>
+                    </div>
+
+                    <button class="settings-link" onclick="openAdvancedNotificationSettings()">
+                        <i class="fas fa-sliders-h"></i> فتح إعدادات الإشعارات
+                    </button>
+                </div>
+
+                <!-- Test Results -->
+                <div class="test-section">
+                    <h3><i class="fas fa-list"></i> سجل الاختبارات</h3>
+                    <div id="testLog" style="background: #f8fafc; padding: 15px; border-radius: 6px; font-family: monospace; font-size: 12px; max-height: 300px; overflow-y: auto;">
+                        <p style="color: #6b7280;">سيظهر سجل الاختبارات هنا...</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <p>&copy; 2025 Temo. جميع الحقوق محفوظة.</p>
+        </footer>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    
+    <script src="firebase-config.js"></script>
+    <script src="notifications.js"></script>
+    <script src="advanced-notifications.js"></script>
+
+    <script>
+        let testCount = 0;
+
+        function logTest(message) {
+            testCount++;
+            const log = document.getElementById('testLog');
+            const timestamp = new Date().toLocaleTimeString('ar-EG');
+            const entry = document.createElement('div');
+            entry.style.padding = '8px';
+            entry.style.borderBottom = '1px solid #e5e7eb';
+            entry.innerHTML = `<span style="color: #3b82f6;">[${timestamp}]</span> ${message}`;
+            
+            if (log.children.length > 0 && log.children[0].textContent.includes('سيظهر سجل')) {
+                log.innerHTML = '';
+            }
+            
+            log.insertBefore(entry, log.firstChild);
+            
+            if (log.children.length > 20) {
+                log.removeChild(log.lastChild);
+            }
+        }
+
+        function updateSystemStatus() {
+            const status = document.getElementById('systemStatus');
+            const isInitialized = window.advancedNotificationManager ? '✅ مهيأ' : '❌ غير مهيأ';
+            const notificationManager = window.notificationManager ? '✅ موجود' : '❌ غير موجود';
+            const firebaseReady = window.db ? '✅ متصل' : '❌ غير متصل';
+
+            status.innerHTML = `
+                <div class="status active">
+                    <i class="fas fa-check-circle"></i> نظام الإشعارات المتقدمة: ${isInitialized}
+                </div>
+                <div class="status active">
+                    <i class="fas fa-check-circle"></i> مدير الإشعارات: ${notificationManager}
+                </div>
+                <div class="status ${window.db ? 'active' : 'inactive'}">
+                    <i class="fas fa-${window.db ? 'check-circle' : 'times-circle'}"></i> Firebase: ${firebaseReady}
+                </div>
+            `;
+        }
+
+        // Test Functions
+        function testHighSales() {
+            logTest('🎉 اختبار: مبيعات عالية');
+            if (window.advancedNotificationManager) {
+                const sale = {
+                    id: 'test_high_' + Date.now(),
+                    totalSales: 6000,
+                    ordersCount: 20,
+                    date: new Date()
+                };
+                window.advancedNotificationManager.analyzeSalesAlert(sale);
+            } else {
+                logTest('❌ خطأ: نظام الإشعارات غير مهيأ');
+            }
+        }
+
+        function testLowSales() {
+            logTest('⚠️ اختبار: مبيعات منخفضة');
+            if (window.advancedNotificationManager) {
+                const sale = {
+                    id: 'test_low_' + Date.now(),
+                    totalSales: 500,
+                    ordersCount: 5,
+                    date: new Date()
+                };
+                window.advancedNotificationManager.analyzeSalesAlert(sale);
+            } else {
+                logTest('❌ خطأ: نظام الإشعارات غير مهيأ');
+            }
+        }
+
+        function testHighExpense() {
+            logTest('⚠️ اختبار: مصروف كبير');
+            if (window.advancedNotificationManager) {
+                const expense = {
+                    id: 'test_exp_high_' + Date.now(),
+                    amount: 2500,
+                    category: 'مواد غذائية',
+                    description: 'شراء مكونات اختبار',
+                    date: new Date()
+                };
+                window.advancedNotificationManager.analyzeExpenseAlert(expense);
+            } else {
+                logTest('❌ خطأ: نظام الإشعارات غير مهيأ');
+            }
+        }
+
+        function testCriticalExpense() {
+            logTest('🚨 اختبار: مصروف حرج');
+            if (window.advancedNotificationManager) {
+                const expense = {
+                    id: 'test_exp_critical_' + Date.now(),
+                    amount: 6000,
+                    category: 'صيانة',
+                    description: 'إصلاح معدات اختبار',
+                    date: new Date()
+                };
+                window.advancedNotificationManager.analyzeExpenseAlert(expense);
+            } else {
+                logTest('❌ خطأ: نظام الإشعارات غير مهيأ');
+            }
+        }
+
+        function testDailyPerformance() {
+            logTest('📊 اختبار: ملخص الأداء اليومي');
+            if (window.advancedNotificationManager) {
+                window.advancedNotificationManager.analyzePerformance();
+            } else {
+                logTest('❌ خطأ: نظام الإشعارات غير مهيأ');
+            }
+        }
+
+        function testSuccessNotification() {
+            logTest('✅ اختبار: إشعار نجاح');
+            if (window.notificationManager) {
+                window.notificationManager.showSuccess('تم إكمال العملية بنجاح!', 'نجح الاختبار');
+            }
+        }
+
+        function testWarningNotification() {
+            logTest('⚠️ اختبار: إشعار تحذير');
+            if (window.notificationManager) {
+                window.notificationManager.showWarning('هذا تحذير تجريبي', 'تحذير الاختبار');
+            }
+        }
+
+        function testErrorNotification() {
+            logTest('❌ اختبار: إشعار خطأ');
+            if (window.notificationManager) {
+                window.notificationManager.showError('حدث خطأ في الاختبار', 'خطأ الاختبار');
+            }
+        }
+
+        function testInfoNotification() {
+            logTest('ℹ️ اختبار: إشعار معلومات');
+            if (window.notificationManager) {
+                window.notificationManager.showInfo('هذه معلومة تجريبية', 'معلومات الاختبار');
+            }
+        }
+
+        function openAdvancedNotificationSettings() {
+            logTest('⚙️ فتح إعدادات الإشعارات المتقدمة');
+            if (window.advancedNotificationManager) {
+                window.advancedNotificationManager.toggleAdvancedSettings();
+            }
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                updateSystemStatus();
+                logTest('✅ تم تحميل صفحة الاختبار');
+                logTest('ℹ️ انقر على أي زر لاختبار الإشعارات');
+            }, 2000);
+        });
+
+        // Update status every 5 seconds
+        setInterval(updateSystemStatus, 5000);
+    </script>
+</body>
+</html>

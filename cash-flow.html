@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>التدفق النقدي - Temo</title>
+    <link rel="stylesheet" href="styles-pro.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="logo">
+                <i class="fas fa-utensils"></i>
+                <h1>Temo</h1>
+            </div>
+            <nav class="nav">
+                <a href="index.html" class="nav-link"><i class="fas fa-home"></i> الرئيسية</a>
+                <a href="reports.html" class="nav-link"><i class="fas fa-file-alt"></i> التقارير الأساسية</a>
+                <a href="saved-reports.html" class="nav-link"><i class="fas fa-save"></i> التقارير المحفوظة</a>
+                <a href="statistics.html" class="nav-link"><i class="fas fa-chart-pie"></i> الإحصائيات</a>
+                <a href="profit-loss.html" class="nav-link"><i class="fas fa-coins"></i> الأرباح والخسائر</a>
+                <a href="cash-flow.html" class="nav-link active"><i class="fas fa-money-bill-wave"></i> التدفق
+                    النقدي</a>
+                <a href="inventory-reports.html" class="nav-link"><i class="fas fa-boxes"></i> تحليلات المخزون</a>
+                <a href="customer-analytics.html" class="nav-link"><i class="fas fa-users"></i> تحليلات العملاء</a>
+                <a href="settings.html" class="nav-link" id="settingsLink" style="display: none;"><i
+                        class="fas fa-cog"></i> الإعدادات</a>
+            </nav>
+        </header>
+
+        <main class="main">
+            <div class="page-container">
+                <div class="page-header">
+                    <div class="page-title">
+                        <i class="fas fa-money-bill-wave"></i>
+                        <h2>التدفق النقدي</h2>
+                    </div>
+                    <div class="page-actions">
+                        <button class="btn btn-primary" onclick="loadCashFlowData()">
+                            <i class="fas fa-sync-alt"></i> تحديث
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Summary Cards -->
+                <div class="stats-overview">
+                    <div class="overview-card revenue">
+                        <div class="card-header">
+                            <i class="fas fa-arrow-down"></i>
+                            <h3>التدفق الداخل (Inflow)</h3>
+                        </div>
+                        <div class="card-content">
+                            <div class="main-stat" id="cashIn">0 ج.م</div>
+                        </div>
+                    </div>
+
+                    <div class="overview-card expenses">
+                        <div class="card-header">
+                            <i class="fas fa-arrow-up"></i>
+                            <h3>التدفق الخارج (Outflow)</h3>
+                        </div>
+                        <div class="card-content">
+                            <div class="main-stat" id="cashOut">0 ج.م</div>
+                        </div>
+                    </div>
+
+                    <div class="overview-card profit">
+                        <div class="card-header">
+                            <i class="fas fa-wallet"></i>
+                            <h3>صافي التدفق</h3>
+                        </div>
+                        <div class="card-content">
+                            <div class="main-stat" id="netCashFlow">0 ج.م</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="charts-grid">
+                    <div class="chart-container" style="grid-column: span 2;">
+                        <div class="chart-header">
+                            <h3><i class="fas fa-chart-line"></i> حركة النقدية اليومية</h3>
+                        </div>
+                        <canvas id="cashFlowChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <p>&copy; 2024 Temo. جميع الحقوق محفوظة.</p>
+        </footer>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+    <script src="cash-flow.js"></script>
+    <script src="notifications.js"></script>
+</body>
+
+</html>

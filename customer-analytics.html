@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تحليلات العملاء - Temo</title>
+    <link rel="stylesheet" href="styles-pro.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="logo">
+                <i class="fas fa-utensils"></i>
+                <h1>Temo</h1>
+            </div>
+            <nav class="nav">
+                <a href="index.html" class="nav-link"><i class="fas fa-home"></i> الرئيسية</a>
+                <a href="reports.html" class="nav-link"><i class="fas fa-file-alt"></i> التقارير الأساسية</a>
+                <a href="saved-reports.html" class="nav-link"><i class="fas fa-save"></i> التقارير المحفوظة</a>
+                <a href="statistics.html" class="nav-link"><i class="fas fa-chart-pie"></i> الإحصائيات</a>
+                <a href="profit-loss.html" class="nav-link"><i class="fas fa-coins"></i> الأرباح والخسائر</a>
+                <a href="cash-flow.html" class="nav-link"><i class="fas fa-money-bill-wave"></i> التدفق النقدي</a>
+                <a href="inventory-reports.html" class="nav-link"><i class="fas fa-boxes"></i> تحليلات المخزون</a>
+                <a href="customer-analytics.html" class="nav-link active"><i class="fas fa-users"></i> تحليلات
+                    العملاء</a>
+                <a href="settings.html" class="nav-link" id="settingsLink" style="display: none;"><i
+                        class="fas fa-cog"></i> الإعدادات</a>
+            </nav>
+        </header>
+
+        <main class="main">
+            <div class="page-container">
+                <div class="page-header">
+                    <div class="page-title">
+                        <i class="fas fa-users"></i>
+                        <h2>تحليلات العملاء</h2>
+                    </div>
+                    <div class="page-actions">
+                        <button class="btn btn-primary" onclick="refreshCustomerData()">
+                            <i class="fas fa-sync-alt"></i> تحديث البيانات
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Summary Cards -->
+                <div class="stats-overview">
+                    <div class="overview-card revenue">
+                        <div class="card-header">
+                            <i class="fas fa-user-plus"></i>
+                            <h3>إجمالي العملاء</h3>
+                        </div>
+                        <div class="card-content">
+                            <div class="main-stat" id="totalCustomers">0</div>
+                            <div class="sub-stats">
+                                <span class="period">عميل مسجل</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="overview-card profit">
+                        <div class="card-header">
+                            <i class="fas fa-shopping-bag"></i>
+                            <h3>متوسط الطلبات للعميل</h3>
+                        </div>
+                        <div class="card-content">
+                            <div class="main-stat" id="avgOrdersPerCustomer">0</div>
+                            <div class="sub-stats">
+                                <span class="period">طلب/عميل</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="overview-card expenses">
+                        <div class="card-header">
+                            <i class="fas fa-money-bill-wave"></i>
+                            <h3>متوسط إنفاق العميل</h3>
+                        </div>
+                        <div class="card-content">
+                            <div class="main-stat" id="avgSpendPerCustomer">0 ج.م</div>
+                            <div class="sub-stats">
+                                <span class="period">في كل زيارة</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="charts-grid">
+                    <div class="chart-container">
+                        <div class="chart-header">
+                            <h3><i class="fas fa-chart-bar"></i> أكثر العملاء نشاطاً</h3>
+                        </div>
+                        <canvas id="topCustomersChart"></canvas>
+                    </div>
+
+                    <div class="chart-container">
+                        <div class="chart-header">
+                            <h3><i class="fas fa-chart-pie"></i> توزيع العملاء (جدد vs دائمين)</h3>
+                        </div>
+                        <canvas id="customerRetentionChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="detailed-stats">
+                    <div class="stats-section">
+                        <h3><i class="fas fa-star"></i> قائمة أفضل العملاء</h3>
+                        <div class="table-container">
+                            <table class="sales-table">
+                                <thead>
+                                    <tr>
+                                        <th>العميل</th>
+                                        <th>رقم الهاتف</th>
+                                        <th>عدد الطلبات</th>
+                                        <th>إجمالي الإنفاق</th>
+                                        <th>آخر زيارة</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="topCustomersTableBody">
+                                    <!-- Populated by JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <p>&copy; 2024 Temo. جميع الحقوق محفوظة.</p>
+        </footer>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+    <script src="customer-analytics.js"></script>
+    <script src="notifications.js"></script>
+</body>
+
+</html>

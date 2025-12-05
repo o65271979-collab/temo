@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Temo - نظام إدارة المطعم</title>
+    <link rel="stylesheet" href="styles-pro.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#2563eb">
+    <style>
+        /* Force unregister Service Workers */
+    </style>
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.getRegistrations().then(function (registrations) {
+                for (let registration of registrations) {
+                    registration.unregister().then(function (boolean) {
+                        console.log('Service Worker unregistered: ', boolean);
+                    });
+                }
+            });
+        }
+    </script>
+    <style>
+        /* متغيرات الألوان */
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --success: #10b981;
+            --success-dark: #059669;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --light: #f8fafc;
+            --border: #e5e7eb;
+            --text-dark: #1f2937;
+            --text-light: #6b7280;
+        }
+
+        /* صفحة الرئيسية */
+        .page-container {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            padding: 30px 20px;
+        }
+
+        /* قسم الترحيب */
+        .welcome-section {
+            margin-bottom: 40px;
+        }
+
+        .welcome-hero {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+            padding: 50px;
+            border: 1px solid var(--border);
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 50px;
+            align-items: center;
+        }
+
+        .hero-content h1 {
+            font-size: 2.8rem;
+            color: var(--text-dark);
+            margin: 0 0 20px 0;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .hero-content h1 i {
+            color: var(--primary);
+            font-size: 3rem;
+        }
+
+        .hero-subtitle {
+            font-size: 1.4rem;
+            color: var(--primary);
+            margin: 0 0 15px 0;
+            font-weight: 700;
+        }
+
+        .hero-description {
+            font-size: 1.1rem;
+            color: var(--text-light);
+            margin: 0 0 30px 0;
+            line-height: 1.8;
+        }
+
+        .hero-actions {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .hero-actions .btn {
+            padding: 16px 32px;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .hero-features {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .feature-item {
+            background: linear-gradient(135deg, #f8fafc, #f0f4f8);
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            border: 2px solid var(--border);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .feature-item:hover {
+            transform: translateY(-10px);
+            border-color: var(--primary);
+            box-shadow: 0 15px 40px rgba(37, 99, 235, 0.15);
+        }
+
+        .feature-item i {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+
+        .feature-item h3 {
+            font-size: 1.2rem;
+            color: var(--text-dark);
+            margin: 0 0 10px 0;
+            font-weight: 700;
+        }
+
+        .feature-item p {
+            color: var(--text-light);
+            margin: 0;
+            font-size: 0.95rem;
+        }
+
+        /* بطاقة معلومات المستخدم */
+        .user-info-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+            padding: 35px;
+            margin-bottom: 30px;
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .user-avatar {
+            font-size: 4rem;
+            color: var(--primary);
+            min-width: 100px;
+            text-align: center;
+        }
+
+        .user-details {
+            flex: 1;
+        }
+
+        .user-details h3 {
+            font-size: 1.5rem;
+            color: var(--text-dark);
+            margin: 0 0 10px 0;
+            font-weight: 700;
+        }
+
+        .user-details p {
+            color: var(--text-light);
+            margin: 8px 0;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .user-details p i {
+            color: var(--primary);
+            width: 16px;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 15px;
+            margin-right: auto;
+        }
+
+        /* بطاقات الإحصائيات */
+        .stats-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+            border: 2px solid transparent;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--success));
+        }
+
+        .stat-card:nth-child(2)::before {
+            background: linear-gradient(90deg, var(--warning), var(--danger));
+        }
+
+        .stat-card:nth-child(3)::before {
+            background: linear-gradient(90deg, var(--success), #10b981);
+        }
+
+        .stat-card:nth-child(4)::before {
+            background: linear-gradient(90deg, #3b82f6, var(--primary));
+        }
+
+        .stat-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
+            border-color: var(--primary);
+        }
+
+        .stat-icon {
+            font-size: 2.5rem;
+            color: var(--primary);
+            min-width: 60px;
+            text-align: center;
+        }
+
+        .stat-content h3 {
+            font-size: 1.8rem;
+            color: var(--text-dark);
+            margin: 0;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary), var(--success));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat-content p {
+            color: var(--text-light);
+            margin: 5px 0 0 0;
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+
+        /* الإجراءات السريعة */
+        .quick-actions {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+            padding: 35px;
+            border: 1px solid var(--border);
+        }
+
+        .quick-actions h3 {
+            font-size: 1.5rem;
+            color: var(--text-dark);
+            margin: 0 0 25px 0;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .quick-actions h3 i {
+            color: var(--primary);
+            font-size: 1.8rem;
+        }
+
+        .actions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+        }
+
+        .action-card {
+            background: linear-gradient(135deg, #f8fafc, #f0f4f8);
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            text-decoration: none;
+            color: inherit;
+            border: 2px solid var(--border);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .action-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--primary);
+            box-shadow: 0 15px 40px rgba(37, 99, 235, 0.15);
+            background: linear-gradient(135deg, rgba(37, 99, 235, 0.05), rgba(16, 185, 129, 0.05));
+        }
+
+        .action-card i {
+            font-size: 2.8rem;
+            color: var(--primary);
+        }
+
+        .action-card h4 {
+            font-size: 1.2rem;
+            color: var(--text-dark);
+            margin: 0;
+            font-weight: 700;
+        }
+
+        .action-card p {
+            color: var(--text-light);
+            margin: 0;
+            font-size: 0.95rem;
+        }
+
+        /* الأزرار */
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1rem;
+            font-family: inherit;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(37, 99, 235, 0.3);
+        }
+
+        .btn-outline {
+            background: white;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+
+        .btn-outline:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* استجابة الجوال */
+        @media (max-width: 1024px) {
+            .welcome-hero {
+                grid-template-columns: 1fr;
+                padding: 40px;
+                gap: 30px;
+            }
+
+            .hero-content h1 {
+                font-size: 2.2rem;
+            }
+
+            .hero-features {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .page-container {
+                padding: 20px 15px;
+            }
+
+            .welcome-hero {
+                padding: 25px;
+                border-radius: 15px;
+            }
+
+            .hero-content h1 {
+                font-size: 1.8rem;
+            }
+
+            .hero-subtitle {
+                font-size: 1.1rem;
+            }
+
+            .hero-description {
+                font-size: 0.95rem;
+            }
+
+            .user-info-card {
+                flex-direction: column;
+                text-align: center;
+                padding: 25px;
+            }
+
+            .header-actions {
+                margin-right: 0;
+                width: 100%;
+            }
+
+            .header-actions .btn {
+                width: 100%;
+            }
+
+            .stats-cards {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+
+            .stat-card {
+                padding: 20px;
+            }
+
+            .actions-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+
+            .action-card {
+                padding: 20px;
+            }
+
+            .quick-actions {
+                padding: 25px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="logo">
+                <i class="fas fa-utensils"></i>
+                <h1>Temo</h1>
+            </div>
+            <nav class="nav">
+                <a href="index.html" class="nav-link active"><i class="fas fa-home"></i> الرئيسية</a>
+                <a href="login.html" class="nav-link"><i class="fas fa-sign-in-alt"></i> تسجيل الدخول</a>
+                <a href="shifts.html" class="nav-link"><i class="fas fa-clock"></i> الشيفتات</a>
+                <a href="expenses.html" class="nav-link"><i class="fas fa-receipt"></i> المصاريف</a>
+                <a href="reports.html" class="nav-link"><i class="fas fa-chart-bar"></i> التقارير</a>
+                <a href="statistics.html" class="nav-link"><i class="fas fa-analytics"></i> الإحصائيات</a>
+                <a href="profit-loss.html" class="nav-link"><i class="fas fa-coins"></i> الأرباح والخسائر</a>
+                <a href="cash-flow.html" class="nav-link"><i class="fas fa-money-bill-wave"></i> التدفق النقدي</a>
+                <a href="inventory-reports.html" class="nav-link"><i class="fas fa-boxes"></i> تحليلات المخزون</a>
+                <a href="customer-analytics.html" class="nav-link"><i class="fas fa-users"></i> تحليلات العملاء</a>
+                <a href="settings.html" class="nav-link"><i class="fas fa-cog"></i> الإعدادات</a>
+                <button id="logoutBtn" class="logout-btn" style="display: none;"><i class="fas fa-sign-out-alt"></i>
+                    خروج</button>
+            </nav>
+        </header>
+
+        <main class="main">
+            <div class="page-container">
+                <!-- Welcome Section for Guests -->
+                <div id="guestSection" class="welcome-section">
+                    <div class="welcome-hero">
+                        <div class="hero-content">
+                            <h1><i class="fas fa-utensils"></i> مرحباً بك في Temo</h1>
+                            <p class="hero-subtitle">نظام إدارة المطعم الذكي والمتطور</p>
+                            <p class="hero-description">
+                                إدارة شاملة لجميع عمليات مطعمك من الشيفتات والمبيعات إلى المصاريف والتقارير التفصيلية
+                            </p>
+                            <div class="hero-actions">
+                                <a href="login.html" class="btn btn-primary">
+                                    <i class="fas fa-sign-in-alt"></i> تسجيل الدخول
+                                </a>
+                            </div>
+                        </div>
+                        <div class="hero-features">
+                            <div class="feature-item">
+                                <i class="fas fa-clock"></i>
+                                <h3>إدارة الشيفتات</h3>
+                                <p>تتبع أوقات العمل والمبيعات</p>
+                            </div>
+                            <div class="feature-item">
+                                <i class="fas fa-chart-bar"></i>
+                                <h3>التقارير التفصيلية</h3>
+                                <p>تحليلات شاملة للأداء</p>
+                            </div>
+                            <div class="feature-item">
+                                <i class="fas fa-receipt"></i>
+                                <h3>إدارة المصاريف</h3>
+                                <p>تتبع دقيق لجميع المصروفات</p>
+                            </div>
+                            <div class="feature-item">
+                                <i class="fas fa-analytics"></i>
+                                <h3>الإحصائيات المتقدمة</h3>
+                                <p>رؤى ذكية لاتخاذ القرارات</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dashboard for Logged In Users -->
+                <div id="dashboardSection" style="display: none;">
+                    <div class="page-header">
+                        <div class="page-title">
+                            <i class="fas fa-tachometer-alt"></i>
+                            <h2>لوحة التحكم</h2>
+                        </div>
+                        <div class="page-actions">
+                            <button class="btn btn-primary" onclick="refreshAllData()">
+                                <i class="fas fa-sync-alt"></i> تحديث البيانات
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- User Info Card -->
+                    <div id="userInfo" class="user-info-card">
+                        <div class="user-avatar">
+                            <i class="fas fa-user-circle"></i>
+                        </div>
+                        <div class="user-details">
+                            <h3>مرحباً، <span id="userDisplayName"></span></h3>
+                            <p><i class="fas fa-envelope"></i> <span id="userEmail"></span></p>
+                            <p><i class="fas fa-calendar"></i> آخر دخول: <span id="lastLogin"></span></p>
+                        </div>
+                        <div class="header-actions">
+                            <!-- Notifications will be added here by notifications.js -->
+                            <button id="logoutBtn" class="btn btn-outline">
+                                <i class="fas fa-sign-out-alt"></i>
+                                تسجيل الخروج
+                            </button>
+                        </div>
+
+                        <!-- Quick Stats -->
+                        <div class="stats-cards">
+                            <div class="stat-card" onclick="window.location.href='shifts.html'">
+                                <div class="stat-icon">
+                                    <i class="fas fa-clock"></i>
+                                </div>
+                                <div class="stat-content">
+                                    <h3 id="shiftsCount">0</h3>
+                                    <p>الشيفتات</p>
+                                </div>
+                            </div>
+                            <div class="stat-content">
+                                <h3 id="shiftsCount">0</h3>
+                                <p>الشيفتات</p>
+                            </div>
+                        </div>
+                        <div class="stat-card" onclick="window.location.href='reports.html'">
+                            <div class="stat-icon">
+                                <i class="fas fa-chart-bar"></i>
+                            </div>
+                        </div>
+                        <div class="stat-card" onclick="window.location.href='expenses.html'">
+                            <div class="stat-icon">
+                                <i class="fas fa-receipt"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3 id="expensesCount">0</h3>
+                                <p>المصاريف</p>
+                            </div>
+                        </div>
+                        <div class="stat-card" onclick="window.location.href='statistics.html'">
+                            <div class="stat-icon">
+                                <i class="fas fa-analytics"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3 id="totalRevenue">0 ج.م</h3>
+                                <p>إجمالي الإيرادات</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Actions -->
+                    <div class="quick-actions">
+                        <h3><i class="fas fa-bolt"></i> الإجراءات السريعة</h3>
+                        <div class="actions-grid">
+                            <a href="shifts.html" class="action-card">
+                                <i class="fas fa-clock"></i>
+                                <h4>عرض الشيفتات</h4>
+                                <p>إدارة ومراقبة جميع الشيفتات</p>
+                            </a>
+                            <a href="expenses.html" class="action-card">
+                                <i class="fas fa-receipt"></i>
+                                <h4>المصاريف</h4>
+                                <p>تتبع وإدارة المصروفات</p>
+                            </a>
+                            <a href="statistics.html" class="action-card">
+                                <i class="fas fa-analytics"></i>
+                                <h4>الإحصائيات</h4>
+                                <p>تحليلات متقدمة ورؤى ذكية</p>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <p>&copy; 2025 Temo. جميع الحقوق محفوظة.</p>
+        </footer>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+    <script src="app-compat.js"></script>
+    <script src="notifications.js"></script>
+    <script src="advanced-notifications.js"></script>
+</body>
+
+</html>

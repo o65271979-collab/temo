@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Temo - الإعدادات</title>
+    <link rel="stylesheet" href="styles-pro.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* متغيرات الألوان */
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --success: #10b981;
+            --success-dark: #059669;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --light: #f8fafc;
+            --border: #e5e7eb;
+            --text-dark: #1f2937;
+            --text-light: #6b7280;
+        }
+
+        /* صفحة الإعدادات */
+        .page-container {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            padding: 30px 20px;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .page-title {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .page-title h2 {
+            font-size: 2.2rem;
+            color: var(--text-dark);
+            margin: 0;
+            font-weight: 700;
+        }
+
+        .page-title i {
+            font-size: 2.5rem;
+            color: var(--primary);
+        }
+
+        /* التبويبات */
+        .tabs-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+            margin-bottom: 30px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+
+        .tabs {
+            display: flex;
+            flex-wrap: wrap;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .tab-btn {
+            flex: 1;
+            min-width: 150px;
+            padding: 18px 20px;
+            background: white;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-light);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            position: relative;
+            font-family: inherit;
+        }
+
+        .tab-btn:hover {
+            color: var(--primary);
+            background: var(--light);
+        }
+
+        .tab-btn.active {
+            color: var(--primary);
+            background: linear-gradient(135deg, rgba(37, 99, 235, 0.05), rgba(16, 185, 129, 0.05));
+        }
+
+        .tab-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--success));
+        }
+
+        .tab-btn i {
+            font-size: 1.2rem;
+        }
+
+        /* محتوى التبويبات */
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* أقسام البيانات */
+        .data-section {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+
+        .section-header {
+            background: linear-gradient(135deg, #f8fafc, #f0f4f8);
+            padding: 25px;
+            border-bottom: 2px solid var(--primary);
+        }
+
+        .section-header h3 {
+            margin: 0;
+            color: var(--text-dark);
+            font-size: 1.5rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .section-header i {
+            color: var(--primary);
+            font-size: 1.8rem;
+        }
+
+        .data-container {
+            padding: 30px;
+        }
+
+        /* بطاقة معلومات المستخدم */
+        .user-info-card {
+            background: linear-gradient(135deg, #f8fafc, #f0f4f8);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            display: flex;
+            gap: 25px;
+            align-items: flex-start;
+            border: 2px solid var(--border);
+            transition: all 0.3s;
+        }
+
+        .user-info-card:hover {
+            border-color: var(--primary);
+            box-shadow: 0 10px 30px rgba(37, 99, 235, 0.1);
+        }
+
+        .user-avatar {
+            font-size: 4rem;
+            color: var(--primary);
+            min-width: 80px;
+            text-align: center;
+        }
+
+        .user-details {
+            flex: 1;
+        }
+
+        .detail-row {
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border);
+            color: var(--text-dark);
+            font-size: 1rem;
+        }
+
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+
+        .detail-row strong {
+            color: var(--primary);
+            font-weight: 700;
+        }
+
+        /* أقسام النماذج */
+        .form-section {
+            margin-bottom: 30px;
+        }
+
+        .form-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .form-section h4 {
+            font-size: 1.3rem;
+            color: var(--text-dark);
+            margin: 0 0 20px 0;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--primary);
+        }
+
+        .form-section h4 i {
+            color: var(--primary);
+            font-size: 1.5rem;
+        }
+
+        /* مجموعات النماذج */
+        .form-group {
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            padding: 14px 16px;
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: all 0.3s;
+            background: white;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+            background: linear-gradient(135deg, rgba(37, 99, 235, 0.02), rgba(16, 185, 129, 0.02));
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        /* الأزرار */
+        .btn {
+            padding: 14px 28px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1rem;
+            font-family: inherit;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(37, 99, 235, 0.3);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, var(--light), #e5e7eb);
+            color: var(--text-dark);
+            border: 2px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background: linear-gradient(135deg, #e5e7eb, #d1d5db);
+            transform: translateY(-2px);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, var(--danger), #dc2626);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(239, 68, 68, 0.3);
+        }
+
+        /* جدول المستخدمين */
+        .users-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .users-table th {
+            background: linear-gradient(135deg, #f8fafc, #f0f4f8);
+            padding: 16px 12px;
+            text-align: right;
+            font-weight: 700;
+            color: var(--text-dark);
+            border-bottom: 2px solid var(--primary);
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .users-table td {
+            padding: 16px 12px;
+            text-align: right;
+            border-bottom: 1px solid var(--border);
+            color: var(--text-dark);
+        }
+
+        .users-table tbody tr {
+            transition: all 0.3s;
+        }
+
+        .users-table tbody tr:hover {
+            background: linear-gradient(90deg, rgba(37, 99, 235, 0.05), transparent);
+            box-shadow: inset 0 0 10px rgba(37, 99, 235, 0.05);
+        }
+
+        .users-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* الشارات */
+        .badge {
+            display: inline-block;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .badge-admin {
+            background: linear-gradient(135deg, #fee2e2, #fecaca);
+            color: #991b1b;
+            border: 1px solid #fca5a5;
+        }
+
+        .badge-manager {
+            background: linear-gradient(135deg, #fef3c7, #fde68a);
+            color: #92400e;
+            border: 1px solid #fcd34d;
+        }
+
+        .badge-employee {
+            background: linear-gradient(135deg, #dcfce7, #bbf7d0);
+            color: #166534;
+            border: 1px solid #86efac;
+        }
+
+        /* رسائل النجاح والخطأ */
+        .alert {
+            padding: 16px 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 500;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .alert-success {
+            background: linear-gradient(135deg, #dcfce7, #bbf7d0);
+            color: #166534;
+            border-left: 4px solid var(--success);
+        }
+
+        .alert-error {
+            background: linear-gradient(135deg, #fee2e2, #fecaca);
+            color: #991b1b;
+            border-left: 4px solid var(--danger);
+        }
+
+        .alert-warning {
+            background: linear-gradient(135deg, #fef3c7, #fde68a);
+            color: #92400e;
+            border-left: 4px solid var(--warning);
+        }
+
+        /* استجابة الجوال */
+        @media (max-width: 768px) {
+            .page-container {
+                padding: 20px 15px;
+            }
+
+            .page-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .page-title h2 {
+                font-size: 1.8rem;
+            }
+
+            .tabs {
+                flex-direction: column;
+            }
+
+            .tab-btn {
+                min-width: auto;
+                justify-content: flex-start;
+                padding: 14px 16px;
+            }
+
+            .tab-btn.active::after {
+                position: absolute;
+                left: -2px;
+                bottom: auto;
+                width: 3px;
+                height: 100%;
+            }
+
+            .data-container {
+                padding: 20px;
+            }
+
+            .user-info-card {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+
+            .detail-row {
+                text-align: center;
+            }
+
+            .form-group input,
+            .form-group select,
+            .form-group textarea {
+                width: 100%;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .users-table {
+                font-size: 0.9rem;
+            }
+
+            .users-table th,
+            .users-table td {
+                padding: 10px 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="logo">
+                <i class="fas fa-utensils"></i>
+                <h1>Temo</h1>
+            </div>
+            <nav class="nav">
+                <a href="index.html" class="nav-link"><i class="fas fa-home"></i> الرئيسية</a>
+                <a href="shifts.html" class="nav-link"><i class="fas fa-clock"></i> الشيفتات</a>
+                <a href="expenses.html" class="nav-link"><i class="fas fa-receipt"></i> المصاريف</a>
+                <a href="reports.html" class="nav-link"><i class="fas fa-chart-bar"></i> التقارير</a>
+                <a href="statistics.html" class="nav-link"><i class="fas fa-analytics"></i> الإحصائيات</a>
+                <a href="settings.html" class="nav-link active"><i class="fas fa-cog"></i> الإعدادات</a>
+                <button id="logoutBtn" class="logout-btn"><i class="fas fa-sign-out-alt"></i> خروج</button>
+            </nav>
+        </header>
+
+        <main class="main">
+            <div class="page-container">
+                <div class="page-header">
+                    <div class="page-title">
+                        <i class="fas fa-cog"></i>
+                        <h2>إعدادات النظام</h2>
+                    </div>
+                    <div class="page-actions">
+                        <button class="btn btn-primary" onclick="refreshData()">
+                            <i class="fas fa-sync-alt"></i> تحديث
+                        </button>
+                    </div>
+                </div>
+
+                <div class="tabs-container">
+                    <div class="tabs">
+                        <button class="tab-btn active" data-tab="profile"><i class="fas fa-user"></i> الملف الشخصي</button>
+                        <button class="tab-btn" data-tab="password"><i class="fas fa-key"></i> كلمة المرور</button>
+                        <button class="tab-btn" data-tab="users"><i class="fas fa-users"></i> إدارة المستخدمين</button>
+                        <button class="tab-btn" data-tab="data"><i class="fas fa-database"></i> إدارة البيانات</button>
+                    </div>
+                </div>
+
+                <!-- Profile Tab -->
+                <div id="profileTab" class="tab-content active">
+                    <div class="data-section">
+                        <div class="section-header">
+                            <h3><i class="fas fa-user"></i> معلومات الحساب</h3>
+                        </div>
+                        <div class="data-container">
+                            <div class="user-info-card">
+                                <div class="user-avatar">
+                                    <i class="fas fa-user-circle"></i>
+                                </div>
+                                <div class="user-details">
+                                    <div class="detail-row">
+                                        <span><strong>البريد الإلكتروني:</strong> <span id="currentEmail">جاري التحميل...</span></span>
+                                    </div>
+                                    <div class="detail-row">
+                                        <span><strong>تاريخ إنشاء الحساب:</strong> <span id="accountCreated">جاري التحميل...</span></span>
+                                    </div>
+                                    <div class="detail-row">
+                                        <span><strong>آخر تسجيل دخول:</strong> <span id="lastSignIn">جاري التحميل...</span></span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-section">
+                                <h4><i class="fas fa-envelope"></i> تحديث البريد الإلكتروني</h4>
+                                <form id="updateEmailForm">
+                                    <div class="form-group">
+                                        <label for="newEmail">البريد الإلكتروني الجديد</label>
+                                        <input type="email" id="newEmail" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="currentPasswordForEmail">كلمة المرور الحالية</label>
+                                        <input type="password" id="currentPasswordForEmail" required>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-save"></i> تحديث البريد الإلكتروني
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Password Tab -->
+                <div id="passwordTab" class="tab-content">
+                    <div class="data-section">
+                        <div class="section-header">
+                            <h3><i class="fas fa-key"></i> تغيير كلمة المرور</h3>
+                        </div>
+                        <div class="data-container">
+                            <div class="form-section">
+                                <form id="changePasswordForm">
+                                    <div class="form-group">
+                                        <label for="currentPassword">كلمة المرور الحالية</label>
+                                        <input type="password" id="currentPassword" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="newPassword">كلمة المرور الجديدة</label>
+                                        <input type="password" id="newPassword" required minlength="6">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="confirmNewPassword">تأكيد كلمة المرور الجديدة</label>
+                                        <input type="password" id="confirmNewPassword" required minlength="6">
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-key"></i> تغيير كلمة المرور
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Users Management Tab -->
+                <div id="usersTab" class="tab-content">
+                    <div class="data-section">
+                        <div class="section-header">
+                            <h3><i class="fas fa-users"></i> إدارة المستخدمين</h3>
+                        </div>
+                        <div class="data-container">
+                            <div class="form-section">
+                                <h4><i class="fas fa-user-plus"></i> إضافة مستخدم جديد</h4>
+                                <form id="addUserForm">
+                                    <div class="form-group">
+                                        <label for="userEmail">البريد الإلكتروني</label>
+                                        <input type="email" id="userEmail" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="userPassword">كلمة المرور</label>
+                                        <input type="password" id="userPassword" required minlength="6">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="userRole">الدور</label>
+                                        <select id="userRole" required>
+                                            <option value="">اختر الدور</option>
+                                            <option value="admin">مدير</option>
+                                            <option value="manager">مدير فرع</option>
+                                            <option value="employee">موظف</option>
+                                        </select>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-user-plus"></i> إضافة المستخدم
+                                    </button>
+                                </form>
+                            </div>
+
+                            <div class="form-section">
+                                <h4><i class="fas fa-list"></i> قائمة المستخدمين</h4>
+                                <div id="usersList" class="data-container">
+                                    <div class="loading-state">
+                                        <i class="fas fa-spinner fa-spin"></i>
+                                        <p>جاري تحميل المستخدمين...</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Data Management Tab -->
+                <div id="dataTab" class="tab-content">
+                    <div class="data-section">
+                        <div class="section-header">
+                            <h3><i class="fas fa-database"></i> إدارة البيانات</h3>
+                        </div>
+                        <div class="data-container">
+                        
+                        <div class="data-stats">
+                            <div class="stat-item">
+                                <i class="fas fa-clock"></i>
+                                <div>
+                                    <span class="stat-label">الشيفتات</span>
+                                    <span class="stat-value" id="dataShiftsCount">0</span>
+                                </div>
+                            </div>
+                            <div class="stat-item">
+                                <i class="fas fa-chart-bar"></i>
+                                <div>
+                                    <span class="stat-label">التقارير</span>
+                                    <span class="stat-value" id="dataReportsCount">0</span>
+                                </div>
+                            </div>
+                            <div class="stat-item">
+                                <i class="fas fa-receipt"></i>
+                                <div>
+                                    <span class="stat-label">المصاريف</span>
+                                    <span class="stat-value" id="dataExpensesCount">0</span>
+                                </div>
+                            </div>
+                            <div class="stat-item">
+                                <i class="fas fa-users"></i>
+                                <div>
+                                    <span class="stat-label">المستخدمين</span>
+                                    <span class="stat-value" id="dataUsersCount">0</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="danger-zone">
+                            <h4><i class="fas fa-exclamation-triangle"></i> منطقة الخطر</h4>
+                            <p class="warning-text">
+                                <i class="fas fa-warning"></i>
+                                تحذير: العمليات التالية لا يمكن التراجع عنها. يرجى التأكد قبل المتابعة.
+                            </p>
+                            
+                            <div class="danger-actions">
+                                <div class="danger-action">
+                                    <div class="action-info">
+                                        <h5>مسح جميع الشيفتات</h5>
+                                        <p>سيتم حذف جميع بيانات الشيفتات نهائياً</p>
+                                    </div>
+                                    <button class="btn btn-danger" onclick="clearData('shifts')">
+                                        <i class="fas fa-trash"></i> مسح الشيفتات
+                                    </button>
+                                </div>
+
+                                <div class="danger-action">
+                                    <div class="action-info">
+                                        <h5>مسح جميع التقارير</h5>
+                                        <p>سيتم حذف جميع تقارير المبيعات نهائياً</p>
+                                    </div>
+                                    <button class="btn btn-danger" onclick="clearData('reports')">
+                                        <i class="fas fa-trash"></i> مسح التقارير
+                                    </button>
+                                </div>
+
+                                <div class="danger-action">
+                                    <div class="action-info">
+                                        <h5>مسح جميع المصاريف</h5>
+                                        <p>سيتم حذف جميع بيانات المصاريف نهائياً</p>
+                                    </div>
+                                    <button class="btn btn-danger" onclick="clearData('expenses')">
+                                        <i class="fas fa-trash"></i> مسح المصاريف
+                                    </button>
+                                </div>
+
+                                <div class="danger-action critical">
+                                    <div class="action-info">
+                                        <h5>مسح جميع البيانات</h5>
+                                        <p>سيتم حذف جميع البيانات في النظام نهائياً (الشيفتات، التقارير، المصاريف)</p>
+                                    </div>
+                                    <button class="btn btn-danger critical" onclick="clearAllData()">
+                                        <i class="fas fa-exclamation-triangle"></i> مسح جميع البيانات
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="message" class="message"></div>
+                <div id="loading" class="loading" style="display: none;">
+                    <div class="spinner"></div>
+                    <p>جاري المعالجة...</p>
+                </div>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <p>&copy; 2024 Temo. جميع الحقوق محفوظة.</p>
+        </footer>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    
+    <script src="settings-compat.js"></script>
+    <script src="notifications.js"></script>
+</body>
+</html>
